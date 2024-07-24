@@ -18,6 +18,15 @@ defmodule Mix.Tasks.Compile.NervesPackage do
   def run(_args) do
     debug_info("Compile.NervesPackage start")
 
+    if Mix.Project.config()[:app] == :nerves_system_ti_am62x do
+      path = "../redwire_labs_buildroot_packages/"
+      Mix.Project.in_project(:redwire_labs_buildroot_packages, path, fn module ->
+        if module.project()[:br_package] do
+          System.put_env("NERVES_EXTERNAL_PACKAGES", path)
+        end
+      end)
+    end
+
     if Nerves.Env.enabled?() do
       bootstrap_check!()
 
